@@ -82,7 +82,7 @@ class App extends React.Component{
     return cell;
   }
 
-  getWeather = async e => {
+  getWeather = async (e) => {
     e.preventDefault();
 
     const country = e.target.elements.country.value;
@@ -104,11 +104,42 @@ class App extends React.Component{
         wind_speed:response.wind.speed,
         Humidity:response.main.humidity
         // error: false
-    })
+    });
 
     this.get_WeatherIcon(this.weatherIcon, response.weather[0].id);
-  };
+
+    
+    setInterval(() => {
+      this.getWeather1()
+      
+    }, 3000);
+
+    this.getWeather1= async () => {
+    
+    
+      const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_key}`);
+      const response = await api_call.json();
   
+      console.log("refresh");
+  
+      this.setState({
+        city:response.name,
+        country: response.sys.country,
+        // main: response.weather[0].main,
+          celsius: this.calCelsius(response.main.temp),
+          temp_max: this.calCelsius(response.main.temp_max),
+          temp_min: this.calCelsius(response.main.temp_min),
+          description: response.weather[0].description,
+          wind_speed:response.wind.speed,
+          Humidity:response.main.humidity
+          // error: false
+      });
+  
+      this.get_WeatherIcon(this.weatherIcon, response.weather[0].id);
+    };
+   
+  };
+
 
   render() {
          return(
